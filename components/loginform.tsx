@@ -1,17 +1,16 @@
-import React from 'react';
-import { useAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
-import { StyleSheet, Text, View, TextInput, Dimensions, SafeAreaView, Button, TouchableOpacity } from 'react-native';
+import * as React from "react";
+import { StyleSheet, Text, TextInput, Dimensions, SafeAreaView, TouchableOpacity } from 'react-native';
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../features/redux/user-slice";
 const { width, height } = Dimensions.get('screen')
 
-const usernameJotai = atomWithStorage('username', '')
-const passwordJotai = atomWithStorage('password', '')
-const userJotai = atomWithStorage('user', '')
 
-export default function LoginForm({navigation}:any) {
-    const [username, setUsername] = useAtom(usernameJotai)
-    const [password, setPassword] = useAtom(passwordJotai)
-    const [user, setUser] = useAtom(userJotai)
+
+export default function LoginForm({ navigation }: any) {
+    const dispatch = useDispatch();
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
 
 
     const submitForm = () => {
@@ -19,6 +18,7 @@ export default function LoginForm({navigation}:any) {
             name: username,
             password: password
         }
+        console.log(data)
         fetch('http://192.168.0.115:3000/login', {
             method: 'POST',
             headers: {
@@ -28,11 +28,11 @@ export default function LoginForm({navigation}:any) {
         })
             .then(res => res.json())
             .then(data => {
-                setUser(data)
+                dispatch(login(data))
                 console.log(data)
                 setPassword('')
                 setUsername('')
-                navigation.navigate('Dashboard', {name: 'Dashboard'})
+                navigation.navigate('Dashboard', { name: 'Dashboard' })
             })
             .catch(err => {
                 console.log(err)
@@ -41,19 +41,17 @@ export default function LoginForm({navigation}:any) {
     }
 
     return (
-        <>
-            <SafeAreaView style={styles.containerForm}>
-                <Text style={styles.text}>Usuario</Text>
-                <TextInput style={styles.input} placeholder="Digite o username"
-                    keyboardType='default' value={username} onChangeText={setUsername} />
-                <Text style={styles.text}>Senha</Text>
-                <TextInput style={styles.input} value={password}  onChangeText={setPassword} placeholder="Digite a senha"
-                    keyboardType="numeric" />
-                <TouchableOpacity style={styles.submit} onPress={submitForm}>
-                    <Text>Logar</Text>
-                </TouchableOpacity>
-            </SafeAreaView>
-        </>
+        <SafeAreaView style={styles.containerForm}>
+            <Text style={styles.text}>Usuario</Text>
+            <TextInput style={styles.input} placeholder="Digite o username"
+                keyboardType='default'  onChangeText={(e) => setUsername(e)} />
+            <Text style={styles.text}>Senha</Text>
+            <TextInput style={styles.input}  onChangeText={(e) => setPassword(e)} placeholder="Digite a senha"
+                keyboardType="numeric" />
+            <TouchableOpacity style={styles.submit} onPress={submitForm}>
+                <Text>Logar</Text>
+            </TouchableOpacity>
+        </SafeAreaView>
     )
 }
 

@@ -1,40 +1,38 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Provider } from 'jotai';
-import LoginForm from './components/loginform';
-const { width, height } = Dimensions.get('screen')
+import * as React from "react";
+import { Text } from 'react-native';
+import { PersistGate } from 'redux-persist/integration/react'
+import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginForm from './components/loginForm';
 import Dashboard from './components/dashboard';
-const Stack = createNativeStackNavigator();
+import { persistor, store } from "./features/redux/store";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-
-    <Provider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="Login"
-            component={LoginForm}
-            options={{ title: 'Bem vindo ' }}
-          />
-          <Stack.Screen
-            name="Dashboard"
-            component={Dashboard}
-            options={{ title: 'Dashboard' }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+    <QueryClientProvider client={new QueryClient()}>
+      <Provider store={store}>
+        <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Login"
+                component={LoginForm}
+                options={{ title: 'Bem vindo ' }}
+              />
+              <Stack.Screen
+                name="Dashboard"
+                component={Dashboard}
+                options={{ title: 'Dashboard' }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </PersistGate>
+      </Provider>
+    </QueryClientProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

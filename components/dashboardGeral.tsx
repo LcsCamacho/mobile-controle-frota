@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react';
+import * as React  from "react";
+import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from "react-redux";
 import { VictoryPie } from 'victory-native';
 const { width, height } = Dimensions.get('screen')
 
-
-
-
 export default function DashboardGeral() {
+  const {user} = useSelector((state: any) => state.user)
   const [veiculos, setVeiculos] = useState([]);
   const [motoristas, setMotoristas] = useState([]);
   const [manutencao, setManutencao] = useState([]);
