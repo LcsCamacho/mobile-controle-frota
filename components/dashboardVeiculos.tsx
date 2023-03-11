@@ -1,25 +1,25 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Dimensions, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { VictoryPie } from 'victory-native';
 import VeiculoForm from "./veiculoForm";
+import { Vehicle } from "../types";
 const { width, height } = Dimensions.get('screen')
 
 export default function DashboardVeiculos() {
   const { user } = useSelector((state: any) => state.user)
-  const [veiculos, setVeiculos] = useState([]);
-  const [veiculosIndisp, setVeiculosIndisp] = useState([]);
-  const [veiculosDisp, setVeiculosDisp] = useState([]);
+  const [veiculos, setVeiculos] = useState<Vehicle[]>([]);
+  const [veiculosIndisp, setVeiculosIndisp] = useState<Vehicle[]>([]);
+  const [veiculosDisp, setVeiculosDisp] = useState<Vehicle[]>([]);
 
   const [listarVeiculosIndisp, setListarVeiculosIndisp] = useState(false);
   const [listarVeiculosDisp, setListarVeiculosDisp] = useState(false);
   const [listarVeiculos, setListarVeiculos] = useState(false);
   const [inserirVeiculoForm, setInserirVeiculoForm] = useState(false);
 
-  const listVehicle = async () => {
+  const fetchVeiculos = async () => {
     const response = await fetch('http://192.168.0.115:3000/veiculo');
     const data = await response.json();
     setVeiculos(data);
@@ -31,7 +31,7 @@ export default function DashboardVeiculos() {
     refetchOnReconnect: true,
     refetchInterval: 5000,
   }
-  const { isLoading, error } = useQuery('veiculos', listVehicle, useQueryOptions);
+  const { isLoading, error } = useQuery('veiculos', fetchVeiculos, useQueryOptions);
 
   useEffect(() => {
     const veiculosIndisp = veiculos.filter((veiculo: any) => !veiculo.avaliable);
@@ -44,8 +44,8 @@ export default function DashboardVeiculos() {
   if (error) return <Text>Error...</Text>
 
   return (
-    <>
-      <ScrollView style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
 
           <Text>Dashboard Veiculos</Text>
@@ -54,6 +54,9 @@ export default function DashboardVeiculos() {
           <Text>Indisponiveis: {veiculosIndisp.length}</Text>
           <View style={styles.chart}>
             <VictoryPie
+              animate={{ duration: 2000 }}
+
+              height={height * 0.3}
               width={width * 0.9}
               style={{
                 data: {
@@ -76,13 +79,15 @@ export default function DashboardVeiculos() {
             onPress={() => setListarVeiculos(!listarVeiculos)}>Veiculos {listarVeiculos ? "-" : "+"}</Text>
           {listarVeiculos && (
             <View style={styles.veiculoContainer}>
-              {veiculos.map((veiculo: any) => (
-                <View style={styles.veiculoItem} key={veiculo.id}>
-                  <Text>{veiculo.id}</Text>
-                  <Text>{veiculo.plate}</Text>
-                  <Text>{veiculo.model}</Text>
-                </View>
-              ))}
+              {veiculos.map((veiculo) => {
+                return (
+                  <View style={styles.veiculoItem} key={veiculo.id}>
+                    <Text>{veiculo.id}</Text>
+                    <Text>{veiculo.plate}</Text>
+                    <Text>{veiculo.model}</Text>
+                  </View>
+                )})
+}
             </View>
           )}
 
@@ -91,13 +96,14 @@ export default function DashboardVeiculos() {
             onPress={() => setListarVeiculosDisp(!listarVeiculosDisp)}>Veiculos Disponiveis {listarVeiculosDisp ? "-" : "+"}</Text>
           {listarVeiculosDisp && (
             <View style={styles.veiculoContainer}>
-              {veiculosDisp.map((veiculo: any) => (
+              {veiculosDisp.map((veiculo) => {
+                return (
                 <View style={styles.veiculoItem} key={veiculo.id}>
                   <Text>{veiculo.id}</Text>
                   <Text>{veiculo.plate}</Text>
                   <Text>{veiculo.model}</Text>
                 </View>
-              ))}
+                )})}
             </View>
           )}
 
@@ -116,8 +122,9 @@ export default function DashboardVeiculos() {
             </View>
           )}
 
-          <Text style={inserirVeiculoForm ? stylesMenuOpen.inserirVeiculo : stylesMenuClosed.inserirVeiculo}
+          {user.management && <Text style={inserirVeiculoForm ? stylesMenuOpen.inserirVeiculo : stylesMenuClosed.inserirVeiculo}
             onPress={() => setInserirVeiculoForm(!inserirVeiculoForm)}>Inserir Veiculo {inserirVeiculoForm ? "-" : "+"}</Text>
+          }
           {inserirVeiculoForm && (
             <View style={styles.formVeiculo}>
               <VeiculoForm />
@@ -125,13 +132,13 @@ export default function DashboardVeiculos() {
           )}
         </View>
       </ScrollView>
-    </>
+    </View>
   )
 }
 
 const { styleMenuClosed } = StyleSheet.create({
   styleMenuClosed: {
-    width: width,
+    width: width * .95,
     textAlign: 'center',
     padding: 10,
     borderStyle: "dashed",
@@ -143,7 +150,7 @@ const { styleMenuClosed } = StyleSheet.create({
 const { styleMenuOpen } = StyleSheet.create({
   styleMenuOpen: {
     backgroundColor: '#ccc',
-    width: width,
+    width: width * .95,
     textAlign: 'center',
     padding: 10,
     borderStyle: "dashed",
@@ -168,12 +175,17 @@ const stylesMenuOpen = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: {
-    height: height,
-    width: width,
+    alignSelf: 'center',
+    width: width * .95,
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  scrollView: {
   },
   content: {
-    width: width,
+    width: width * .95,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
@@ -185,16 +197,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#000',
     alignItems: 'center',
-    width: width,
+    width: width * .95,
+
   },
   veiculoContainer: {
-    width: width,
+    width: width * .95,
     flexWrap: 'wrap',
     flexDirection: 'row',
     gap: 10,
-    padding: 10,
-    paddingLeft: 30,
-
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   veiculoItem: {
     width: width / 2.5,
@@ -208,7 +220,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   formVeiculo: {
-    width: width,
+    width: width*95,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',
