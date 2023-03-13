@@ -8,6 +8,7 @@ import LoginForm from './components/loginForm';
 import Dashboard from './components/dashboard';
 import { persistor, store } from "./features/redux/store";
 import { QueryClient, QueryClientProvider } from "react-query";
+import CadastroUsuario from "./components/cadUser";
 
 
 const Stack = createNativeStackNavigator();
@@ -28,6 +29,11 @@ export default function App() {
                 name="Dashboard"
                 component={Dashboard}
                 options={{ title: 'Dashboard' }}
+              />
+              <Stack.Screen
+                name="Register"
+                component={CadastroUsuario}
+                options={{ title: 'Cadastro de usuario' }}
               />
             </Stack.Navigator>
           </NavigationContainer>

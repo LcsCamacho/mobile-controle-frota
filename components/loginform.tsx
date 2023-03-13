@@ -51,6 +51,9 @@ export default function LoginForm({ navigation }: any) {
             <TouchableOpacity style={styles.submit} onPress={submitForm}>
                 <Text>Logar</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.submit} onPress={() => navigation.navigate('Register', { name: 'Register' })}>
+                <Text>Cadastrar</Text>
+            </TouchableOpacity>
         </SafeAreaView>
     )
 }

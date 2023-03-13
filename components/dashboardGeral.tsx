@@ -4,60 +4,49 @@ import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from "react-redux";
 import { VictoryPie } from 'victory-native';
+import { useFetch } from "../hooks/UseFetchAll";
+import { Motorista, Manutencao, Veiculo } from "../types";
 const { width, height } = Dimensions.get('screen')
+
+interface stateListAll {
+  veiculos: Veiculo[];
+  motoristas: Motorista[];
+  manutencoes: Manutencao[];
+}
+
 
 export default function DashboardGeral() {
   const {user} = useSelector((state: any) => state.user)
-  const [veiculos, setVeiculos] = useState([]);
-  const [motoristas, setMotoristas] = useState([]);
-  const [manutencao, setManutencao] = useState([]);
-  const [dataVeiculos, setDataVeiculos] = useState([]);
 
+  const { data, error } = useFetch<stateListAll>('http://192.168.0.115:3000')
 
-  const useListAll = () => {
-    const [loading, setLoading] = useState(true);
-    const listAll = async () => {
-      try {
-        const [veiculos, motoristas, manutencao] = await Promise.all([
-          fetch('http://192.168.0.115:3000/veiculo'),
-          fetch('http://192.168.0.115:3000/motorista'),
-          fetch('http://192.168.0.115:3000/manutencao')
-        ]);
-        const [veiculosJson, motoristasJson, manutencaoJson] = await Promise.all([
-          veiculos.json(),
-          motoristas.json(),
-          manutencao.json()
-        ]);
-        setLoading(false);
-        return { veiculosJson, motoristasJson, manutencaoJson };
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    return { listAll, loading };
-  }
+  // const { values, loading } = useListAll('http://192.168.0.115:3000');
+  // console.log({values, loading});
 
-  const { listAll, loading } = useListAll();
-
-  useEffect(() => {
-    listAll().then((data) => {
-      setManutencao(data?.manutencaoJson);
-      setMotoristas(data?.motoristasJson);
-      setVeiculos(data?.veiculosJson);
-    });
-  }, [])
-
-  if (loading) return <Text>Loading...</Text>
-
+  // useEffect(() => {
+  //   listAll().then((data) => {
+  //     setManutencao(data?.manutencaoJson);
+  //     setMotoristas(data?.motoristasJson);
+  //     setVeiculos(data?.veiculosJson);
+  //   });
+  // }, [])
+  if (error) return <Text>Error...</Text>
+  if (!data) return <Text>Loading...</Text>
+  const { veiculos, motoristas, manutencoes } = data;
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <Text>Dashboard Geral</Text>
-        <Text>Veiculos: {veiculos.length}</Text>
-        <Text>Motoristas: {motoristas.length}</Text>
-        <Text>Manutencao: {manutencao.length}</Text>
+      <View style={styles.container}>
+        <SafeAreaView style={styles.dados}>
+          <Text>Dashboard Geral</Text>
+          <Text>Veiculos: {veiculos.length}</Text>
+          <Text>Motoristas: {motoristas.length}</Text>
+          <Text>Manutenções: {manutencoes.length}</Text>
+
+        </SafeAreaView>
         <View style={styles.chart}>
           <VictoryPie
+            animate={{ duration: 1000 }}
+            height={height * .4}
             style={{
               labels: {
                 fontSize: 15,
@@ -67,13 +56,13 @@ export default function DashboardGeral() {
             data={[
               { x: 'Veiculos', y: veiculos.length },
               { x: 'Motoristas', y: motoristas.length },
-              { x: 'Manutencao', y: manutencao.length }
+              { x: 'Manutencao', y: manutencoes.length }
             ]}
-            colorScale={['tomato', 'orange', 'gold']}
+            colorScale={['blue', 'red', 'gold']}
           />
         </View>
 
-      </SafeAreaView>
+      </View>
     </>
   )
 }
@@ -87,9 +76,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'column',
     gap: 10,
+
   },
   chart: {
     width: width,
     alignItems: 'center',
+  },
+  dados:{
+    width: width,
+    alignItems: 'center',
+    gap: 10,
+    flexDirection: 'column',
   }
 })

@@ -5,14 +5,14 @@ import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { VictoryPie } from 'victory-native';
 import VeiculoForm from "./veiculoForm";
-import { Vehicle } from "../types";
+import { Veiculo } from "../types";
 const { width, height } = Dimensions.get('screen')
 
 export default function DashboardVeiculos() {
   const { user } = useSelector((state: any) => state.user)
-  const [veiculos, setVeiculos] = useState<Vehicle[]>([]);
-  const [veiculosIndisp, setVeiculosIndisp] = useState<Vehicle[]>([]);
-  const [veiculosDisp, setVeiculosDisp] = useState<Vehicle[]>([]);
+  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [veiculosIndisp, setVeiculosIndisp] = useState<Veiculo[]>([]);
+  const [veiculosDisp, setVeiculosDisp] = useState<Veiculo[]>([]);
 
   const [listarVeiculosIndisp, setListarVeiculosIndisp] = useState(false);
   const [listarVeiculosDisp, setListarVeiculosDisp] = useState(false);
