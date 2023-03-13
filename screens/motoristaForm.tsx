@@ -2,9 +2,11 @@ import * as React from "react";
 import { StyleSheet, Text, TextInput, Dimensions, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { useState } from "react";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { useSelector } from "react-redux";
 const { width } = Dimensions.get('screen')
 
 export default function MotoristaForm() {
+    const {user} = useSelector((state: any) => state.user)
     const [nome, setNome] = useState('')
     const [cnh, setCnh] = useState('')
     const [success, setSuccess] = useState(false)
@@ -16,15 +18,15 @@ export default function MotoristaForm() {
             cnh: cnh,
             avaliable: true,
         }
-        console.log(data)
-        fetch('http://192.168.0.115:3000/motorista', {
+        fetch('http://10.87.202.156:3000/motorista', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': 'Bearer ' + user.token
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => res.status === 200 ? res.json() : alert('Erro ao inserir motorista'))
             .then(data => {
                 console.log(data)
                 setNome('')

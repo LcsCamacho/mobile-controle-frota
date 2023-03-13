@@ -14,22 +14,11 @@ interface stateListAll {
   manutencoes: Manutencao[];
 }
 
-
 export default function DashboardGeral() {
   const {user} = useSelector((state: any) => state.user)
 
-  const { data, error } = useFetch<stateListAll>('http://192.168.0.115:3000')
+  const { data, error } = useFetch<stateListAll>('http://10.87.202.156:3000')
 
-  // const { values, loading } = useListAll('http://192.168.0.115:3000');
-  // console.log({values, loading});
-
-  // useEffect(() => {
-  //   listAll().then((data) => {
-  //     setManutencao(data?.manutencaoJson);
-  //     setMotoristas(data?.motoristasJson);
-  //     setVeiculos(data?.veiculosJson);
-  //   });
-  // }, [])
   if (error) return <Text>Error...</Text>
   if (!data) return <Text>Loading...</Text>
   const { veiculos, motoristas, manutencoes } = data;

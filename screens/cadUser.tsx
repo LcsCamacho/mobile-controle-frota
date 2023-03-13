@@ -3,7 +3,6 @@ import { TextInput, TouchableOpacity, View, Text, Dimensions, StyleSheet } from 
 const { width, height } = Dimensions.get('screen')
 
 export default function CadastroUsuario({ navigation }: any) {
-
     const [username, setUsername] = useState('')
     const [senha, setSenha] = useState('')
     const [confirmSenha, setConfirmSenha] = useState('')
@@ -18,7 +17,7 @@ export default function CadastroUsuario({ navigation }: any) {
             password: senha,
             management: true,
         }
-        const resp = await fetch('http://http://192.168.0.115:3000/usuario', {
+        const resp = await fetch('http://10.87.202.156:3000/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -27,7 +26,6 @@ export default function CadastroUsuario({ navigation }: any) {
         })
         const response = resp.status === 200 ? resp.json() : false
         if (response) {
-            console.log(data)
             setUsername('')
             setSenha('')
             navigation.navigate('Login', { name: 'Login' })
@@ -42,7 +40,6 @@ export default function CadastroUsuario({ navigation }: any) {
             <TextInput style={styles.input} placeholder="Digite sua senha" onChangeText={(e) => setSenha(e)} />
             <Text style={styles.text}>Confirme sua senha</Text>
             <TextInput style={styles.input} placeholder="Confirme sua senha" onChangeText={(e) => setConfirmSenha(e)} />
-
             <TouchableOpacity style={styles.submit} onPress={criarUsuario}>
                 <Text style={styles.text}>Enviar</Text>
             </TouchableOpacity>

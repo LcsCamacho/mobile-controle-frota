@@ -18,7 +18,7 @@ export default function VeiculoForm() {
             type: 'Passeio'
         }
         console.log(data)
-        fetch('http://192.168.0.115:3000/veiculo', {
+        fetch('http://10.87.202.156:3000/veiculo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

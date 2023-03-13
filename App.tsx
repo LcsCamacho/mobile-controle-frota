@@ -4,11 +4,11 @@ import { PersistGate } from 'redux-persist/integration/react'
 import { Provider } from 'react-redux';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginForm from './components/loginForm';
-import Dashboard from './components/dashboard';
+import LoginForm from './screens/loginform';
+import Dashboard from './screens/dashboard';
 import { persistor, store } from "./features/redux/store";
 import { QueryClient, QueryClientProvider } from "react-query";
-import CadastroUsuario from "./components/cadUser";
+import CadastroUsuario from "./screens/cadUser";
 
 
 const Stack = createNativeStackNavigator();

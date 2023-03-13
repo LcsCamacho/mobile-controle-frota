@@ -20,7 +20,7 @@ export default function DashboardVeiculos() {
   const [inserirVeiculoForm, setInserirVeiculoForm] = useState(false);
 
   const fetchVeiculos = async () => {
-    const response = await fetch('http://192.168.0.115:3000/veiculo');
+    const response = await fetch('http://10.87.202.156:3000/veiculo');
     const data = await response.json();
     setVeiculos(data);
   }
@@ -227,6 +227,4 @@ const styles = StyleSheet.create({
     gap: 10,
     padding: 10,
   }
-
-
 })

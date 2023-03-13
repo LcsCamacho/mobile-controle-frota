@@ -5,8 +5,6 @@ import { useDispatch } from "react-redux";
 import { login } from "../features/redux/user-slice";
 const { width, height } = Dimensions.get('screen')
 
-
-
 export default function LoginForm({ navigation }: any) {
     const dispatch = useDispatch();
     const [username, setUsername] = useState('')
@@ -19,7 +17,7 @@ export default function LoginForm({ navigation }: any) {
             password: password
         }
         console.log(data)
-        fetch('http://192.168.0.115:3000/login', {
+        fetch('http://10.87.202.156:3000/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +27,6 @@ export default function LoginForm({ navigation }: any) {
             .then(res => res.json())
             .then(data => {
                 dispatch(login(data))
-                console.log(data)
                 setPassword('')
                 setUsername('')
                 navigation.navigate('Dashboard', { name: 'Dashboard' })

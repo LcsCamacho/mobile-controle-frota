@@ -21,7 +21,7 @@ export default function DashboardMotoristas() {
     const [inserirMotoristasForm, setInserirMotoristasForm] = useState(false);
 
     const fetchMotorista = async () => {
-        const response = await fetch('http://192.168.0.115:3000/motorista');
+        const response = await fetch('http://10.87.202.156:3000/motorista');
         const data = await response.json();
         setMotoristas(data);
     }
