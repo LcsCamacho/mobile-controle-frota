@@ -16,7 +16,6 @@ export default function LoginForm({ navigation }: any) {
             name: username,
             password: password
         }
-        console.log(data)
         fetch('http://10.87.202.156:3000/login', {
             method: 'POST',
             headers: {
@@ -26,6 +25,7 @@ export default function LoginForm({ navigation }: any) {
         })
             .then(res => res.json())
             .then(data => {
+                console.log(data)
                 dispatch(login(data))
                 setPassword('')
                 setUsername('')

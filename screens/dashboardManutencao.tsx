@@ -2,10 +2,11 @@ import * as React from 'react'
 import { View, Text, ScrollView, StyleSheet, Dimensions, } from 'react-native'
 import { useState } from 'react'
 import { DataTable } from 'react-native-paper'
-import { VictoryPie } from 'victory-native';
+import { VictoryBar, VictoryPie } from 'victory-native';
 import { useQuery } from 'react-query';
 import { Manutencao } from '../types';
 import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 const { width, height } = Dimensions.get('screen')
 
 
@@ -13,22 +14,28 @@ export default function DashboardManutencao() {
     const { user } = useSelector((state: any) => state.user)
 
     const [manutencao, setManutencao] = useState<Manutencao[]>([]);
-    const [manutencaoPorVeiculo, setManutencaoPorVeiculo] = useState([]);
-    const [manutencaoPorMotorista, setManutencaoPorMotorista] = useState([]);
-    const [manutencaoPorTipo, setManutencaoPorTipo] = useState([]);
-    const [manutencaoPorStatus, setManutencaoPorStatus] = useState([]);
+    const [manutencaoPorStatus, setManutencaoPorStatus] = useState<Manutencao[]>([]);
+    const [veiculosEmManutencao, setVeiculosEmManutencao] = useState<Manutencao[]>([]);
     const [listarManutencao, setListarManutencao] = useState(false);
 
-    const listarManutencoes = () => {
-        fetch('http://10.87.202.156:3000/manutencao')
-            .then(response => response.json())
-            .then(data => {
-                setManutencao(data);
-                console.log(data)
-                setListarManutencao(true);
-            })
-            .catch(error => console.error(error))
+    const listarManutencoes = async () => {
+        const [manutencao, veiculosManutencao] = await Promise.all([
+                fetch('http://10.87.202.156:3000/manutencao'),
+                fetch('http://10.87.202.156:3000/veiculos-manutencao'),
+            ])
+        const [manutencaoJson, veiculosManutencaoJson] = await Promise.all([
+                manutencao.json(),
+                veiculosManutencao.json(),
+        ])
+
+        setVeiculosEmManutencao(veiculosManutencaoJson)
+        setManutencao(manutencaoJson)
     }
+
+    
+    useEffect(() => {
+        setManutencaoPorStatus(manutencao.filter((manutencao) => manutencao.checkout))
+    }, [manutencao])
 
     const { isLoading, isError } = useQuery('listarManutencao', listarManutencoes, {
         refetchInterval: 5000,
@@ -43,31 +50,21 @@ export default function DashboardManutencao() {
     if (isLoading) return <Text>Loading...</Text>
     if (isError) return <Text>Error...</Text>
 
-
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <ScrollView>
+                <ScrollView style={styles.scrollView}>
                     <View style={styles.desc}>
                         <Text>Manutenções: {manutencao.length}</Text>
-                        <Text>Manutenções por Veiculo: {manutencaoPorVeiculo.length}</Text>
-                        <Text>Manutenções por Status: {manutencaoPorStatus.length}</Text>
+                        <Text>Manutenções em andamento: {manutencaoPorStatus.length}</Text>
                     </View>
                     <View style={styles.chart}>
-                        <VictoryPie
-                            width={width * 0.9}
-                            style={{
-                                data: {
-                                    fillOpacity: 1, stroke: "#000", strokeWidth: 1
-                                },
-                                labels: {
-                                    fontSize: 15,
-                                    fill: "black"
-                                },
-                            }}
+                        <VictoryBar
+                            height={height / 2.5}
+                            width={width * 0.5}
                             data={[
                                 { x: 1, y: manutencao.length, label: 'Manutenções' },
-                                { x: 2, y: manutencaoPorStatus.length, label: 'por status' },
+                                { x: 2, y: manutencaoPorStatus.length, label: 'Em andamento' },
                             ]}
                             colorScale={['green', 'red']}
                         />
@@ -77,7 +74,6 @@ export default function DashboardManutencao() {
                     {listarManutencao && (
                         <DataTable style={styles.table}>
                             <DataTable.Header>
-                                <DataTable.Title>Id</DataTable.Title>
                                 <DataTable.Title>Data</DataTable.Title>
                                 <DataTable.Title>Valor</DataTable.Title>
                                 <DataTable.Title>Veiculo</DataTable.Title>
@@ -86,10 +82,9 @@ export default function DashboardManutencao() {
                             {manutencao.map((item) => {
                                 return (
                                     <DataTable.Row style={styles.manutencaoItem} key={item.id}>
-                                        <DataTable.Cell>{item.id}</DataTable.Cell>
                                         <DataTable.Cell>{new Date(item.date).toLocaleString()}</DataTable.Cell>
                                         <DataTable.Cell>{item.cost}</DataTable.Cell>
-                                        <DataTable.Cell>{item.VehicleId}</DataTable.Cell>
+                                        <DataTable.Cell>{String(item.Vehicle.plate)}</DataTable.Cell>
                                         <DataTable.Cell>{item.description}</DataTable.Cell>
                                     </DataTable.Row>
                                 )
@@ -108,17 +103,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         width: width,
-        padding: 10,
     },
     content: {
-        width: width * 0.9,
+        width: width,
         alignItems: 'center',
         justifyContent: 'center',
+        gap: 10,
     },
 
     chart: {
+        width: width * 0.9,
         alignItems: 'center',
-        justifyContent: 'center',
+        padding: 10,
     },
     desc: {
         alignItems: 'center',
@@ -126,9 +122,14 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     manutencaoItem: {
-        backgroundColor: '#fff',
+        backgroundColor: '#f6f6f6',
     },
     table: {
         paddingBottom: 20,
+    },
+    scrollView:{
+        width: width * 0.9,
+        gap: 10,
+        padding: 10,
     }
 })

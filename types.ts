@@ -13,6 +13,13 @@ export interface Motorista {
 }
 
 export interface Manutencao {
+    checkout: boolean | null | undefined;
+    Vehicle: {
+        plate: string;
+        model: string;
+        id: number;
+        type: string;
+    };
     id?: number,
     date: Date,
     cost: number,
