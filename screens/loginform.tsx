@@ -3,12 +3,13 @@ import { StyleSheet, Text, TextInput, Dimensions, SafeAreaView, TouchableOpacity
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../features/redux/user-slice";
+import { URL_FETCH } from "../fetchUrl";
 const { width, height } = Dimensions.get('screen')
 
 export default function LoginForm({ navigation }: any) {
     const dispatch = useDispatch();
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const [username, setUsername] = useState('lcscamacho')
+    const [password, setPassword] = useState('123456')
 
 
     const submitForm = () => {
@@ -16,7 +17,7 @@ export default function LoginForm({ navigation }: any) {
             name: username,
             password: password
         }
-        fetch('http://10.87.202.156:3000/login', {
+        fetch(`http://${URL_FETCH}:3000/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,7 +26,6 @@ export default function LoginForm({ navigation }: any) {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
                 dispatch(login(data))
                 setPassword('')
                 setUsername('')
@@ -41,10 +41,10 @@ export default function LoginForm({ navigation }: any) {
         <SafeAreaView style={styles.containerForm}>
             <Text style={styles.text}>Usuario</Text>
             <TextInput style={styles.input} placeholder="Digite o username"
-                keyboardType='default'  onChangeText={(e) => setUsername(e)} />
+                keyboardType='default' value={username}  onChangeText={(e) => setUsername(e)} />
             <Text style={styles.text}>Senha</Text>
             <TextInput style={styles.input}  onChangeText={(e) => setPassword(e)} placeholder="Digite a senha"
-                keyboardType="numeric" />
+                keyboardType="numeric" value={password} />
             <TouchableOpacity style={styles.submit} onPress={submitForm}>
                 <Text>Logar</Text>
             </TouchableOpacity>

@@ -6,6 +6,8 @@ import { useSelector } from "react-redux";
 import { VictoryPie } from 'victory-native';
 import VeiculoForm from "./veiculoForm";
 import { Veiculo } from "../types";
+import { URL_FETCH } from "../fetchUrl";
+import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 const { width, height } = Dimensions.get('screen')
 
 export default function DashboardVeiculos() {
@@ -20,7 +22,7 @@ export default function DashboardVeiculos() {
   const [inserirVeiculoForm, setInserirVeiculoForm] = useState(false);
 
   const fetchVeiculos = async () => {
-    const response = await fetch('http://10.87.202.156:3000/veiculo');
+    const response = await fetch(`http://${URL_FETCH}:3000/veiculo`);
     const data = await response.json();
     setVeiculos(data);
   }
@@ -85,9 +87,16 @@ export default function DashboardVeiculos() {
                     <Text>{veiculo.id}</Text>
                     <Text>{veiculo.plate}</Text>
                     <Text>{veiculo.model}</Text>
+                    <Text>{veiculo.type}</Text>
+                    <Text>{veiculo.avaliable ? (
+                      <MaterialIcons name="check-circle" size={24} color="green" />
+                    ) : (
+                      <MaterialIcons name="cancel" size={24} color="red" />
+                    )}</Text>
                   </View>
-                )})
-}
+                )
+              })
+              }
             </View>
           )}
 
@@ -98,12 +107,13 @@ export default function DashboardVeiculos() {
             <View style={styles.veiculoContainer}>
               {veiculosDisp.map((veiculo) => {
                 return (
-                <View style={styles.veiculoItem} key={veiculo.id}>
-                  <Text>{veiculo.id}</Text>
-                  <Text>{veiculo.plate}</Text>
-                  <Text>{veiculo.model}</Text>
-                </View>
-                )})}
+                  <View style={styles.veiculoItem} key={veiculo.id}>
+                    <Text>{veiculo.id}</Text>
+                    <Text>{veiculo.plate}</Text>
+                    <Text>{veiculo.model}</Text>
+                  </View>
+                )
+              })}
             </View>
           )}
 
@@ -138,7 +148,8 @@ export default function DashboardVeiculos() {
 
 const { styleMenuClosed } = StyleSheet.create({
   styleMenuClosed: {
-    width: width * .95,
+    width: width * .8,
+    borderRadius: 10,
     textAlign: 'center',
     padding: 10,
     borderStyle: "dashed",
@@ -150,7 +161,8 @@ const { styleMenuClosed } = StyleSheet.create({
 const { styleMenuOpen } = StyleSheet.create({
   styleMenuOpen: {
     backgroundColor: '#ccc',
-    width: width * .95,
+    width: width * .8,
+    borderRadius: 10,
     textAlign: 'center',
     padding: 10,
     borderStyle: "dashed",
@@ -193,9 +205,6 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   chart: {
-    borderStyle: "dashed",
-    borderWidth: 1,
-    borderColor: '#000',
     alignItems: 'center',
     width: width * .95,
 
@@ -220,7 +229,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   formVeiculo: {
-    width: width*95,
+    width: width * 95,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'column',

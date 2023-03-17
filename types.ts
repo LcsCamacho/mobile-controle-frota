@@ -1,5 +1,7 @@
 
 export interface Veiculo {
+    type: string;
+    avaliable: boolean;
     id?: number;
     plate: string;
     model: string;
@@ -10,6 +12,18 @@ export interface Motorista {
     name: string;
     cnh?: string;
     avaliable?: boolean;
+}
+
+export interface Viagem {
+    checkOut?: Date;
+    id?: number;
+    date: Date;
+    VehicleId: number;
+    DriverId: number;
+    Vehicle: Veiculo;
+    Driver: Motorista;
+    createdAt: Date;
+    updatedAt?: Date;
 }
 
 export interface Manutencao {

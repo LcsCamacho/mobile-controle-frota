@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { VictoryPie } from 'victory-native';
 import { useFetch } from "../hooks/UseFetchAll";
 import { Motorista, Manutencao, Veiculo } from "../types";
+import { URL_FETCH } from "../fetchUrl";
 const { width, height } = Dimensions.get('screen')
 
 interface stateListAll {
@@ -17,7 +18,7 @@ interface stateListAll {
 export default function DashboardGeral() {
   const {user} = useSelector((state: any) => state.user)
 
-  const { data, error } = useFetch<stateListAll>('http://10.87.202.156:3000')
+  const { data, error } = useFetch<stateListAll>(`http://${URL_FETCH}:3000`)
 
   if (error) return <Text>Error...</Text>
   if (!data) return <Text>Loading...</Text>

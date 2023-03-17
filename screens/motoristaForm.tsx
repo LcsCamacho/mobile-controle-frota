@@ -3,10 +3,11 @@ import { StyleSheet, Text, TextInput, Dimensions, SafeAreaView, TouchableOpacity
 import { useState } from "react";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from "react-redux";
+import { URL_FETCH } from "../fetchUrl";
 const { width } = Dimensions.get('screen')
 
 export default function MotoristaForm() {
-    const {user} = useSelector((state: any) => state.user)
+    const { user } = useSelector((state: any) => state.user)
     const [nome, setNome] = useState('')
     const [cnh, setCnh] = useState('')
     const [success, setSuccess] = useState(false)
@@ -18,11 +19,11 @@ export default function MotoristaForm() {
             cnh: cnh,
             avaliable: true,
         }
-        fetch('http://10.87.202.156:3000/motorista', {
+        fetch(`http://${URL_FETCH}/motorista`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'authorization': 'Bearer ' + user.token
+                'authorization': user.token
             },
             body: JSON.stringify(data)
         })

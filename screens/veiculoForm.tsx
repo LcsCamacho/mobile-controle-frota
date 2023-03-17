@@ -2,9 +2,12 @@ import * as React from "react";
 import { StyleSheet, Text, TextInput, Dimensions, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import { useState } from "react";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { URL_FETCH } from "../fetchUrl";
+import { useSelector } from "react-redux";
 const { width } = Dimensions.get('screen')
 
 export default function VeiculoForm() {
+    const {user} = useSelector((state: any) => state.user)
     const [placa, setPlaca] = useState('')
     const [modelo, setModel] = useState('')
     const [success, setSuccess] = useState(false)
@@ -12,16 +15,17 @@ export default function VeiculoForm() {
 
     const submitForm = () => {
         let data = {
-            model: placa,
-            plate: modelo,
+            model: modelo,
+            plate: placa.toUpperCase(),
             avaliable: true,
             type: 'Passeio'
         }
         console.log(data)
-        fetch('http://10.87.202.156:3000/veiculo', {
+        fetch(`http://${URL_FETCH}:3000/veiculo`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'authorization': user.token
             },
             body: JSON.stringify(data)
         })
@@ -36,7 +40,7 @@ export default function VeiculoForm() {
                 }, 3000)
             })
             .catch(err => {
-                console.log(err)
+                console.log({erro:err})
                 setError(true)
                 setTimeout(() => {
                     setError(false)

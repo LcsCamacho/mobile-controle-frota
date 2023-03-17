@@ -7,6 +7,7 @@ import { VictoryPie } from 'victory-native';
 import { Motorista } from "../types";
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import MotoristaForm from "./motoristaForm";
+import { URL_FETCH } from "../fetchUrl";
 const { width, height } = Dimensions.get('screen')
 
 export default function DashboardMotoristas() {
@@ -21,7 +22,7 @@ export default function DashboardMotoristas() {
     const [inserirMotoristasForm, setInserirMotoristasForm] = useState(false);
 
     const fetchMotorista = async () => {
-        const response = await fetch('http://10.87.202.156:3000/motorista');
+        const response = await fetch(`http://${URL_FETCH}:3000/motorista`);
         const data = await response.json();
         setMotoristas(data);
     }
@@ -136,8 +137,9 @@ export default function DashboardMotoristas() {
 
 const { styleMenuClosed } = StyleSheet.create({
     styleMenuClosed: {
-        width: width * .95,
+        width: width * .8,
         textAlign: 'center',
+        borderRadius: 10,
         padding: 10,
         borderStyle: "dashed",
         borderWidth: 1,
@@ -148,7 +150,7 @@ const { styleMenuClosed } = StyleSheet.create({
 const { styleMenuOpen } = StyleSheet.create({
     styleMenuOpen: {
         backgroundColor: '#ccc',
-        width: width * .95,
+        width: width * .8,
         textAlign: 'center',
         padding: 10,
         borderStyle: "dashed",
@@ -180,9 +182,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
     },
-    scrollView: {
-
-    },
+    scrollView: {},
     content: {
         width: width * .95,
         justifyContent: 'center',
@@ -192,9 +192,6 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     chart: {
-        borderStyle: "dashed",
-        borderWidth: 1,
-        borderColor: '#000',
         alignItems: 'center',
         width: width * .95,
 
