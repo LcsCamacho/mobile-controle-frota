@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { URL_FETCH } from '../fetchUrl';
 import { Manutencao } from '../types';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { useToggleColor } from '../hooks/useToogleColor';
+import { useToggleColor } from '../hooks/UseToogleColor';
 import { useFormatBrl } from '../hooks/UseFormatBrl';
 
 const { width, height } = Dimensions.get('screen')
@@ -251,11 +251,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20,
     },
-    chart: {
-        width: width,
-        alignItems: 'center',
-        padding: 10,
-    },
     desc: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -263,11 +258,11 @@ const styles = StyleSheet.create({
     },
     manutencaoItem: {
         backgroundColor: '#f6f6f6',
-        paddingVertical: 10,
         marginVertical: 5,
     },
     table: {
         paddingBottom: 20,
+        width: width,
     },
     scrollView: {
         width: width,
@@ -298,4 +293,5 @@ const styles = StyleSheet.create({
         textAlignVertical: 'center',
         justifyContent: 'center',
     },
+
 })

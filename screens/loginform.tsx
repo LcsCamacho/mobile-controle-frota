@@ -8,7 +8,7 @@ const { width, height } = Dimensions.get('screen')
 
 export default function LoginForm({ navigation }: any) {
     const dispatch = useDispatch();
-    const [username, setUsername] = useState('lcscamacho')
+    const [username, setUsername] = useState('admin')
     const [password, setPassword] = useState('123456')
 
 
@@ -24,7 +24,7 @@ export default function LoginForm({ navigation }: any) {
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
+            .then(res => res.ok? res.json() : console.log('erro'))
             .then(data => {
                 dispatch(login(data))
                 setPassword('')

@@ -1,1 +1,1 @@
-export const URL_FETCH = '192.168.0.115'
+export const URL_FETCH = '10.87.202.156'

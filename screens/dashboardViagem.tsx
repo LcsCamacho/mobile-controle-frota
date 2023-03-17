@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { URL_FETCH } from '../fetchUrl';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import { useToggleColor } from '../hooks/useToogleColor';
+import { useToggleColor } from '../hooks/UseToogleColor';
 
 const { width, height } = Dimensions.get('screen')
 
@@ -91,7 +91,7 @@ export default function DashboardViagem() {
                                         </DataTable.Row>
                                     )) :
                                         viagens.slice(fromIndex, toIndex).map((viagem) => (
-                                            <DataTable.Row key={viagem.id} >
+                                            <DataTable.Row style={styles.viagemItem} key={viagem.id} >
                                                 <DataTable.Cell>{viagem.Vehicle.plate} </DataTable.Cell>
                                                 <DataTable.Cell> {viagem.Driver.name} </DataTable.Cell>
                                                 <DataTable.Cell> {new Date(viagem.date).toLocaleTimeString()} </DataTable.Cell>
@@ -271,5 +271,10 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderStyle: 'dashed',
     },
+    viagemItem: {
+        width: width,
+        marginVertical: 5,
+        backgroundColor: '#f6f6f6',
+    }
 
 })
